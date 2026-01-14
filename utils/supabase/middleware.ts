@@ -31,5 +31,5 @@ export const createClient = (request: NextRequest) => {
     },
   } as Parameters<typeof createServerClient>[2]);
 
-  return supabaseResponse;
+  return { supabase, response: supabaseResponse };
 };
