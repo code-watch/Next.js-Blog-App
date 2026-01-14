@@ -1,7 +1,23 @@
 import { Extension } from "@tiptap/core";
 import { NodeSelection, Plugin } from "@tiptap/pm/state";
-// @ts-ignore
-import { __serializeForClipboard, EditorView } from "@tiptap/pm/view";
+import { EditorView } from "@tiptap/pm/view";
+import { Slice } from "@tiptap/pm/model";
+
+// Fallback serializer for clipboard since __serializeForClipboard is not exported
+function serializeForClipboard(view: EditorView, slice: Slice) {
+  const div = document.createElement("div");
+  slice.content.forEach((node) => {
+    div.appendChild(view.nodeDOM(0)?.cloneNode(true) || document.createElement("div"));
+  });
+  
+  // Create a simple text representation
+  let text = "";
+  slice.content.forEach((node) => {
+    text += node.textContent + "\n";
+  });
+  
+  return { dom: div, text: text.trim() };
+}
 
 export interface DragHandleOptions {
   /**
@@ -67,7 +83,7 @@ function DragHandle(options: DragHandleOptions) {
     );
 
     const slice = view.state.selection.content();
-    const { dom, text } = __serializeForClipboard(view, slice);
+    const { dom, text } = serializeForClipboard(view, slice);
 
     event.dataTransfer.clearData();
     event.dataTransfer.setData("text/html", dom.innerHTML);

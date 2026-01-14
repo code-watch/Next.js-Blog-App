@@ -8,7 +8,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const body = await req.json();
   const { name, email, message } = body;
 
-  const emailHtml = render(
+  const emailHtml = await render(
     <Email name={name} email={email} message={message} />,
   );
 

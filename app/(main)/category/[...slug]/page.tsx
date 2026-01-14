@@ -8,7 +8,7 @@ import type { Database } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/server";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
-import notFound from "next/navigation";
+import { notFound } from "next/navigation";
 import React from "react";
 import { v4 } from "uuid";
 
@@ -105,7 +105,7 @@ export default async function CategoryPage({
   // Fetch posts
 
   if (!category) {
-    notFound;
+    notFound();
   }
 
   const { data, error } = await supabase
@@ -117,7 +117,7 @@ export default async function CategoryPage({
     .returns<PostWithCategoryWithProfile[]>();
 
   if (!data || error || !data.length) {
-    notFound;
+    notFound();
   }
 
   return (
