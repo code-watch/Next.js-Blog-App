@@ -21,6 +21,14 @@ export async function GET(request: Request) {
       // URL to redirect to after sign in process completes
       return NextResponse.redirect(redirect ? redirect : requestUrl.origin);
     }
+    // Log the error for debugging
+    console.error("[Auth Callback Error]", {
+      message: error.message,
+      status: error.status,
+      name: error.name,
+    });
+  } else {
+    console.error("[Auth Callback Error] No code parameter received in callback URL");
   }
 
   // return the user to an error page with instructions

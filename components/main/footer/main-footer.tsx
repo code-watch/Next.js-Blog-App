@@ -1,6 +1,5 @@
 import { mainFooterConfig } from "@/config/main";
 import Link from "next/link";
-import { v4 } from "uuid";
 import MainNewsletter from "./main-newsletter";
 
 const MainFooter = () => {
@@ -22,7 +21,7 @@ const MainFooter = () => {
                 </h3>
                 <ul role="list" className="mt-6 space-y-4">
                   {mainFooterConfig.categories.map((category) => (
-                    <li key={v4()}>
+                    <li key={category.slug}>
                       <Link
                         href={
                           category.slug === "/"
@@ -43,7 +42,7 @@ const MainFooter = () => {
                 </h3>
                 <ul role="list" className="mt-6 space-y-4">
                   {mainFooterConfig.pages.map((page) => (
-                    <li key={v4()}>
+                    <li key={page.slug}>
                       <Link
                         href={page.slug}
                         className="text-sm leading-6 text-gray-600 hover:text-gray-900 hover:underline"
@@ -62,7 +61,7 @@ const MainFooter = () => {
                 </h3>
                 <ul role="list" className="mt-6 space-y-4">
                   {mainFooterConfig.socials.map((social) => (
-                    <li key={v4()}>
+                    <li key={social.name}>
                       <Link
                         href={social.url}
                         target="_blank"
@@ -80,7 +79,7 @@ const MainFooter = () => {
                 </h3>
                 <ul role="list" className="mt-6 space-y-4">
                   {mainFooterConfig.legals.map((legal) => (
-                    <li key={v4()}>
+                    <li key={legal.slug}>
                       <Link
                         href={legal.slug}
                         className="text-sm leading-6 text-gray-600 hover:text-gray-900 hover:underline"

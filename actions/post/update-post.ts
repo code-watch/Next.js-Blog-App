@@ -1,12 +1,15 @@
 "use server";
 
 import { postUpdateSchema } from "@/lib/validation/post";
-import type { Database } from "@/types/supabase";
+import { ActionResult, actionError, actionSuccess } from "@/types/action";
+import { Draft } from "@/types/collection";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import * as z from "zod";
 
-export async function UpdatePost(context: z.infer<typeof postUpdateSchema>) {
+export async function UpdatePost(
+  context: z.infer<typeof postUpdateSchema>
+): Promise<ActionResult<Draft>> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   try {
@@ -28,12 +31,16 @@ export async function UpdatePost(context: z.infer<typeof postUpdateSchema>) {
       .single();
 
     if (error) {
-      console.log(error);
-      return null;
+      console.error("[UpdatePost Error]", error.message);
+      return actionError(error.message);
     }
-    return data;
+    return actionSuccess(data);
   } catch (error) {
-    console.log(error);
-    return null;
+    if (error instanceof z.ZodError) {
+      console.error("[UpdatePost Validation Error]", error.errors);
+      return actionError("Invalid input data");
+    }
+    console.error("[UpdatePost Error]", error);
+    return actionError("Failed to update post");
   }
 }

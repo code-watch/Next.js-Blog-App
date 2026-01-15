@@ -1,12 +1,14 @@
 "use server";
 
 import { bookmarkSchema } from "@/lib/validation/bookmark";
-import { Database } from "@/types/supabase";
+import { ActionResult, actionError, actionSuccess } from "@/types/action";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import * as z from "zod";
 
-export async function DeleteBookmark(context: z.infer<typeof bookmarkSchema>) {
+export async function DeleteBookmark(
+  context: z.infer<typeof bookmarkSchema>
+): Promise<ActionResult<boolean>> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
@@ -20,18 +22,19 @@ export async function DeleteBookmark(context: z.infer<typeof bookmarkSchema>) {
       .select();
 
     if (error) {
-      console.log(error);
-      return false;
+      console.error("[DeleteBookmark Error]", error.message);
+      return actionError(error.message);
     }
     if (data && data.length > 0) {
-      return true;
+      return actionSuccess(true);
     }
-    return false;
+    return actionError("Bookmark not found");
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.log(error);
-      return false;
+      console.error("[DeleteBookmark Validation Error]", error.errors);
+      return actionError("Invalid bookmark data");
     }
-    return false;
+    console.error("[DeleteBookmark Error]", error);
+    return actionError("Failed to delete bookmark");
   }
 }

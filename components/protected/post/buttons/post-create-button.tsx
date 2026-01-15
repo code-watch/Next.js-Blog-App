@@ -48,16 +48,16 @@ const PostCreateButton = () => {
 
       const response = await CreatePost(post);
 
-      if (response) {
+      if (response.success) {
         toast.success(protectedPostConfig.successCreate);
         // This forces a cache invalidation.
         router.refresh();
         // Redirect to the new post
-        router.push("/editor/posts/" + response.id);
+        router.push("/editor/posts/" + response.data.id);
         setIsLoading(false);
       } else {
         setIsLoading(false);
-        toast.error(protectedPostConfig.errorCreate);
+        toast.error(response.error || protectedPostConfig.errorCreate);
       }
     } else {
       setIsLoading(false);

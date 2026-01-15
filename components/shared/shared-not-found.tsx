@@ -4,7 +4,6 @@ import { sharedNotFoundConfig } from "@/config/shared";
 import { LogoIcon } from "@/icons";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
-import { v4 } from "uuid";
 
 const SharedNotFound = () => {
   return (
@@ -24,7 +23,7 @@ const SharedNotFound = () => {
           <h2 className="sr-only">{sharedNotFoundConfig.menu}</h2>
           <ul role="list" className="divide-y divide-gray-900/5">
             {mainCategoryConfig.map((category) => (
-              <Link key={v4()} href={category.slug || ""}>
+              <Link key={category.slug} href={category.slug || ""}>
                 <li className="relative flex gap-x-6 border-b border-black/5 py-6">
                   <div className="flex h-10 w-10 flex-none items-center justify-center rounded-lg shadow-sm ring-1 ring-gray-900/10">
                     <category.icon className="h-6 w-6 text-gray-600" />

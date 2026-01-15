@@ -25,7 +25,7 @@ export const profileFormSchema = z.object({
 
 export const profileSchema = z.object({
   id: z.string(),
-  fistName: z.string(),
+  firstName: z.string(),
   lastName: z.string(),
   email: z.string().email().optional(),
   userName: z.string().optional(),

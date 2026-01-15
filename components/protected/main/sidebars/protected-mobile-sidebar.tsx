@@ -8,7 +8,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Dispatch, FC, Fragment, SetStateAction } from "react";
-import { v4 } from "uuid";
 
 type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
@@ -96,7 +95,7 @@ const ProtectedMobileSideBar: FC<ProtectedMobileSideBarProps> = ({
                       <li>
                         <ul role="list" className="-mx-2 space-y-1">
                           {dashBoardMenu.map((menu) => (
-                            <li key={v4()}>
+                            <li key={menu.slug}>
                               <Link
                                 href={menu.slug || ""}
                                 className={cn(

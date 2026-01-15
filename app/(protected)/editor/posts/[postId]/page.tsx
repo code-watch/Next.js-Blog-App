@@ -13,12 +13,12 @@ interface PostEditorPageProps {
 }
 
 async function getUserId() {
-  const cookeStore = cookies();
-  const supabase = createClient(cookeStore);
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
   const {
-    data: { session },
+    data: { user },
     error,
-  } = await supabase.auth.getSession();
+  } = await supabase.auth.getUser();
 
   if (error) {
     console.log("Error has occured while getting UserId!");
@@ -26,7 +26,7 @@ async function getUserId() {
     return null;
   }
 
-  return session ? session.user.id : null;
+  return user ? user.id : null;
 }
 
 async function getPost(postId: string, userId: string) {
@@ -91,7 +91,7 @@ async function getCoverImageUrl(
 }
 
 // Get Gallery images filenames and public urls
-async function getGalleryImageFileNames(bucketName: string, userId, postId) {
+async function getGalleryImageFileNames(bucketName: string, userId: string | null, postId: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   const { data, error } = await supabase.storage
@@ -170,7 +170,7 @@ export default async function PostEditorPage({ params }: PostEditorPageProps) {
   );
 
   if (!post) {
-    return notFound;
+    notFound();
   }
 
   return (

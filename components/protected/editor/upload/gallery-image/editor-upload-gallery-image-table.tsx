@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { v4 } from "uuid";
 import EditorUploadGalleryImageItem from "./editor-upload-gallery-image-item";
 import EditorUploadGalleryImageTableEmpty from "./editor-upload-gallery-image-table-empty";
 
@@ -22,7 +21,7 @@ const EditorUploadGalleryImageTable: FC<EditorUploadGalleryImageTableProps> = ({
         <div className="space-y-5 bg-white">
           {imageUrls.map((url, idx) => (
             <EditorUploadGalleryImageItem
-              key={v4()}
+              key={`${url}-${idx}`}
               userId={userId}
               postId={postId}
               fileName={fileNames[idx]}

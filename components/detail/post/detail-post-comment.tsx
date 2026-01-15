@@ -10,7 +10,6 @@ import { CommentWithProfile } from "@/types/collection";
 import { createClient } from "@/utils/supabase/client";
 import { Session } from "@supabase/supabase-js";
 import React from "react";
-import { v4 } from "uuid";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -50,7 +49,7 @@ const DetailPostComment: React.FC<DetailPostCommentProps> = ({
       <div className="py-5">
         {comments?.map((comment) => (
           <DetailPostCommentItem
-            key={v4()}
+            key={comment.id}
             id={comment.id.toString()}
             name={comment.profiles.full_name as string}
             image={comment.profiles.avatar_url as string}

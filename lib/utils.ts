@@ -1,4 +1,5 @@
 import { ClassValue, clsx } from "clsx";
+import DOMPurify from "isomorphic-dompurify";
 import { twMerge } from "tailwind-merge";
 
 // Shadcn UI and for Tailwind CSS
@@ -67,7 +68,21 @@ export const toBase64 = (str: string) =>
     ? Buffer.from(str).toString("base64")
     : window.btoa(str);
 
-export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Sanitize HTML to prevent XSS attacks
+export function sanitizeHtml(html: string): string {
+  return DOMPurify.sanitize(html, {
+    USE_PROFILES: { html: true },
+    ALLOWED_TAGS: [
+      "p", "br", "strong", "em", "u", "s", "a", "ul", "ol", "li",
+      "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "pre", "code",
+      "img", "hr", "table", "thead", "tbody", "tr", "th", "td",
+      "span", "div", "figure", "figcaption"
+    ],
+    ALLOWED_ATTR: ["href", "src", "alt", "title", "class", "target", "rel"],
+  });
+}
 
 export function isValidUrl(url: string) {
   try {

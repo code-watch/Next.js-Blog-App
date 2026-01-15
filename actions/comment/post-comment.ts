@@ -1,17 +1,19 @@
 "use server";
 
 import { commentSchema } from "@/lib/validation/comment";
-import { Database } from "@/types/supabase";
+import { ActionResult, actionError, actionSuccess } from "@/types/action";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import * as z from "zod";
 
-export async function PostComment(context: z.infer<typeof commentSchema>) {
+export async function PostComment(
+  context: z.infer<typeof commentSchema>
+): Promise<ActionResult<boolean>> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   try {
     const comment = commentSchema.parse(context);
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("comments")
       .insert({
         post_id: comment.postId,
@@ -21,15 +23,16 @@ export async function PostComment(context: z.infer<typeof commentSchema>) {
       .single();
 
     if (error) {
-      console.log(error);
-      return false;
+      console.error("[PostComment Error]", error.message);
+      return actionError(error.message);
     }
-    return true;
+    return actionSuccess(true);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.log(error);
-      return false;
+      console.error("[PostComment Validation Error]", error.errors);
+      return actionError("Invalid comment data");
     }
-    return false;
+    console.error("[PostComment Error]", error);
+    return actionError("Failed to post comment");
   }
 }

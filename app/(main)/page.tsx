@@ -5,7 +5,6 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { v4 } from "uuid";
 
 export const revalidate = 0;
 
@@ -44,14 +43,14 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     .returns<PostWithCategoryWithProfile[]>();
 
   if (!data || error || !data.length) {
-    notFound;
+    notFound();
   }
 
   return (
     <>
       <div className="space-y-6">
         {data?.map((post) => (
-          <Suspense key={v4()} fallback={<MainPostItemLoading />}>
+          <Suspense key={post.id} fallback={<MainPostItemLoading />}>
             <MainPostItem post={post} />
           </Suspense>
         ))}

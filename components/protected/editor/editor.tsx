@@ -327,7 +327,7 @@ const Editor: FC<EditorProps> = ({
                           (category) =>
                             category.slug !== "/" && (
                               <FormItem
-                                key={v4()}
+                                key={category.id}
                                 className="flex items-center space-x-3 space-y-0"
                               >
                                 <FormControl>

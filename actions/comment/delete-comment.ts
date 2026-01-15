@@ -1,14 +1,14 @@
 "use server";
 
 import { commentDeleteSchema } from "@/lib/validation/comment";
-import { Database } from "@/types/supabase";
+import { ActionResult, actionError, actionSuccess } from "@/types/action";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import * as z from "zod";
 
 export async function DeleteComment(
-  context: z.infer<typeof commentDeleteSchema>,
-) {
+  context: z.infer<typeof commentDeleteSchema>
+): Promise<ActionResult<boolean>> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   try {
@@ -21,18 +21,19 @@ export async function DeleteComment(
       .select();
 
     if (error) {
-      console.log(error);
-      return false;
+      console.error("[DeleteComment Error]", error.message);
+      return actionError(error.message);
     }
     if (data && data.length > 0) {
-      return true;
+      return actionSuccess(true);
     }
-    return false;
+    return actionError("Comment not found");
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.log(error);
-      return false;
+      console.error("[DeleteComment Validation Error]", error.errors);
+      return actionError("Invalid input data");
     }
-    return false;
+    console.error("[DeleteComment Error]", error);
+    return actionError("Failed to delete comment");
   }
 }

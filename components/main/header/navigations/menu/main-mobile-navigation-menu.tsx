@@ -4,7 +4,6 @@ import { mainCategoryConfig } from "@/config/main";
 import { Disclosure, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { ExoticComponent, FC, ReactNode } from "react";
-import { v4 } from "uuid";
 
 interface MainMobileNavigationMenuProps {
   fragment: ExoticComponent<{
@@ -31,7 +30,7 @@ const MainMobileNavigationMenu: FC<MainMobileNavigationMenuProps> = ({
         <Disclosure.Panel className="w-full border-t border-black/5 bg-gray-50 lg:hidden">
           {mainCategoryConfig.map((category) => (
             <Disclosure.Button
-              key={v4()}
+              key={category.slug}
               as="a"
               onClick={() =>
                 router.push(

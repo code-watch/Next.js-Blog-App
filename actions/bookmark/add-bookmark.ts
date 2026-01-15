@@ -1,17 +1,19 @@
 "use server";
 
 import { bookmarkSchema } from "@/lib/validation/bookmark";
-import { Database } from "@/types/supabase";
+import { ActionResult, actionError, actionSuccess } from "@/types/action";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import * as z from "zod";
 
-export async function AddBookmark(context: z.infer<typeof bookmarkSchema>) {
+export async function AddBookmark(
+  context: z.infer<typeof bookmarkSchema>
+): Promise<ActionResult<boolean>> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   try {
     const bookmark = bookmarkSchema.parse(context);
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("bookmarks")
       .insert({
         id: bookmark.id,
@@ -20,15 +22,16 @@ export async function AddBookmark(context: z.infer<typeof bookmarkSchema>) {
       .single();
 
     if (error) {
-      console.log(error);
-      return false;
+      console.error("[AddBookmark Error]", error.message);
+      return actionError(error.message);
     }
-    return true;
+    return actionSuccess(true);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.log(error);
-      return false;
+      console.error("[AddBookmark Validation Error]", error.errors);
+      return actionError("Invalid bookmark data");
     }
-    return false;
+    console.error("[AddBookmark Error]", error);
+    return actionError("Failed to add bookmark");
   }
 }

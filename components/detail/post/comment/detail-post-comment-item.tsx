@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import moment from "moment";
+import { sanitizeHtml } from "@/lib/utils";
+import { formatDistanceToNow, parseISO } from "date-fns";
 import React from "react";
 import DetailPostCommentDeleteButton from "./detail-post-comment-delete-button";
 
@@ -42,14 +43,14 @@ const DetailPostCommentItem: React.FC<DetailPostCommentItemProps> = ({
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-gray-900">{name}</p>
-          <p className="text-sm text-gray-500">{moment(date).fromNow()}</p>
+          <p className="text-sm text-gray-500">{formatDistanceToNow(parseISO(date), { addSuffix: true })}</p>
         </div>
         <DetailPostCommentDeleteButton id={id} userId={userId} />
       </div>
       <Separator className="mb-4 mt-2" />
       <div
         className="prose prose-sm max-w-none text-gray-500"
-        dangerouslySetInnerHTML={{ __html: comment }}
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(comment) }}
       />
     </div>
   );

@@ -8,7 +8,6 @@ import {
 } from "@heroicons/react/20/solid";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { v4 } from "uuid";
 import { default as SharedPager } from "./shared-pager";
 
 interface SharedPaginationProps {
@@ -65,9 +64,9 @@ const SharedPagination: React.FC<SharedPaginationProps> = ({
       <div className="hidden md:-mt-px md:flex">
         {Array(totalPages)
           .fill(1)
-          .map((el, i) => (
+          .map((_, i) => (
             <SharedPager
-              key={v4()}
+              key={`page-${i}`}
               index={i}
               totalPages={totalPages}
               currentPage={page}

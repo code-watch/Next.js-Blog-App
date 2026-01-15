@@ -1,12 +1,13 @@
 "use server";
 
 import { bookmarkSchema } from "@/lib/validation/bookmark";
-import { Database } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import * as z from "zod";
 
-export async function GetBookmark(context: z.infer<typeof bookmarkSchema>) {
+export async function GetBookmark(
+  context: z.infer<typeof bookmarkSchema>
+): Promise<boolean> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   try {
@@ -18,17 +19,15 @@ export async function GetBookmark(context: z.infer<typeof bookmarkSchema>) {
       .match({ id: bookmark.id, user_id: bookmark.user_id });
 
     if (error) {
-      console.log(error);
+      console.error("[GetBookmark Error]", error.message);
       return false;
     }
-    if (data && data.length > 0) {
-      return true;
-    }
-    return false;
+    return data && data.length > 0;
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.log(error);
-      return false;
+      console.error("[GetBookmark Validation Error]", error.errors);
+    } else {
+      console.error("[GetBookmark Error]", error);
     }
     return false;
   }

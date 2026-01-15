@@ -10,9 +10,9 @@ async function getUserId() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   const {
-    data: { session },
+    data: { user },
     error,
-  } = await supabase.auth.getSession();
+  } = await supabase.auth.getUser();
 
   if (error) {
     console.log("Error has occured while getting UserId!");
@@ -20,7 +20,7 @@ async function getUserId() {
     return null;
   }
 
-  return session ? session.user.id : null;
+  return user ? user.id : null;
 }
 
 const SettingsPage = async () => {
@@ -41,8 +41,7 @@ const SettingsPage = async () => {
   }
 
   if (!data) {
-    notFound;
-    console.log("Cound't find User profile.");
+    notFound();
   }
 
   return (

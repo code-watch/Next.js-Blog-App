@@ -152,7 +152,7 @@ const ProtectedSettingsProfile: FC<ProtectedSettingsProfileProps> = ({
 
     const response = await UpdateSettings({
       id: user.id,
-      fistName: data.firstName,
+      firstName: data.firstName,
       lastName: data.lastName,
       avatarUrl: avatarUrl || "",
       userName: data.userName,

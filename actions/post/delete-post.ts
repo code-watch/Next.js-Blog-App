@@ -1,12 +1,14 @@
 "use server";
 
 import { postDeleteSchema } from "@/lib/validation/post";
-import type { Database } from "@/types/supabase";
+import { ActionResult, actionError, actionSuccess } from "@/types/action";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import * as z from "zod";
 
-export async function DeletePost(context: z.infer<typeof postDeleteSchema>) {
+export async function DeletePost(
+  context: z.infer<typeof postDeleteSchema>
+): Promise<ActionResult<boolean>> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   try {
@@ -19,18 +21,19 @@ export async function DeletePost(context: z.infer<typeof postDeleteSchema>) {
       .select();
 
     if (error) {
-      console.log(error);
-      return false;
+      console.error("[DeletePost Error]", error.message);
+      return actionError(error.message);
     }
     if (data && data.length > 0) {
-      return true;
+      return actionSuccess(true);
     }
-    return false;
+    return actionError("Post not found");
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.log(error);
-      return false;
+      console.error("[DeletePost Validation Error]", error.errors);
+      return actionError("Invalid input data");
     }
-    return false;
+    console.error("[DeletePost Error]", error);
+    return actionError("Failed to delete post");
   }
 }

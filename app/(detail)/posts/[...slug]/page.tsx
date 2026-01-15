@@ -6,7 +6,7 @@ import {
 } from "@/components/detail/post";
 import { DetailPostScrollUpButton } from "@/components/detail/post/buttons";
 import { seoData } from "@/config/root/seo";
-import { getOgImageUrl, getUrl } from "@/lib/utils";
+import { getOgImageUrl, getUrl, sanitizeHtml } from "@/lib/utils";
 import {
   CommentWithProfile,
   PostWithCategoryWithProfile,
@@ -51,7 +51,7 @@ async function getPost(params: { slug: string[] }) {
     .single<PostWithCategoryWithProfile>();
 
   if (!response.data) {
-    notFound;
+    notFound();
   }
 
   return response.data;
@@ -142,20 +142,20 @@ export default async function PostPage({ params }: PostPageProps) {
   let username = null;
   let profileImage = null;
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (session) {
-    username = session.user?.user_metadata.full_name;
+  if (user) {
+    username = user.user_metadata.full_name;
     profileImage =
-      session?.user?.user_metadata.picture ||
-      session?.user?.user_metadata.avatar_url;
+      user.user_metadata.picture ||
+      user.user_metadata.avatar_url;
   }
 
   // Get bookmark status
   const isBookmarked = await getBookmark(
     post.id as string,
-    session?.user.id as string,
+    user?.id as string,
   );
 
   // Get comments
@@ -198,7 +198,7 @@ export default async function PostPage({ params }: PostPageProps) {
               <div className="relative mx-auto max-w-3xl border-slate-500/50 py-5">
                 <div
                   className="lg:prose-md prose"
-                  dangerouslySetInnerHTML={{ __html: post.content || "" }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content || "") }}
                 />
               </div>
               <div className="mx-auto mt-10">

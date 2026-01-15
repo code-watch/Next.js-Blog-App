@@ -3,7 +3,6 @@ import { cn, getUrl } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { v4 } from "uuid";
 
 const ProtectedDesktopSideBar = () => {
   const currentPath = usePathname();
@@ -30,7 +29,7 @@ const ProtectedDesktopSideBar = () => {
               <li>
                 <ul role="list" className="-mx-2 space-y-1">
                   {dashBoardMenu.map((menu) => (
-                    <li key={v4()}>
+                    <li key={menu.slug}>
                       <Link
                         href={menu.slug || ""}
                         className={cn(

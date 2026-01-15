@@ -1,12 +1,15 @@
 "use server";
 
 import { postCreateSchema } from "@/lib/validation/post";
-import type { Database } from "@/types/supabase";
+import { ActionResult, actionError, actionSuccess } from "@/types/action";
+import { Draft } from "@/types/collection";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import * as z from "zod";
 
-export async function CreatePost(context: z.infer<typeof postCreateSchema>) {
+export async function CreatePost(
+  context: z.infer<typeof postCreateSchema>
+): Promise<ActionResult<Draft>> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   try {
@@ -21,12 +24,16 @@ export async function CreatePost(context: z.infer<typeof postCreateSchema>) {
       .single();
 
     if (error) {
-      console.log(error);
-      return null;
+      console.error("[CreatePost Error]", error.message);
+      return actionError(error.message);
     }
-    return data;
+    return actionSuccess(data);
   } catch (error) {
-    console.log(error);
-    return null;
+    if (error instanceof z.ZodError) {
+      console.error("[CreatePost Validation Error]", error.errors);
+      return actionError("Invalid input data");
+    }
+    console.error("[CreatePost Error]", error);
+    return actionError("Failed to create post");
   }
 }

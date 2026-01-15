@@ -4,7 +4,6 @@ import { mainCategoryConfig } from "@/config/main";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { v4 } from "uuid";
 
 const MainDesktopNavigationMenu = () => {
   const currentPath = usePathname();
@@ -18,7 +17,7 @@ const MainDesktopNavigationMenu = () => {
                 ? category.slug
                 : `/category/${category.slug}`
             }
-            key={v4()}
+            key={category.slug}
             className={cn(
               "relative inline-flex items-center rounded-full px-4 py-1.5 text-base font-semibold tracking-tight text-gray-500 antialiased ring-1 ring-transparent transition duration-200 [word-spacing:-5px] active:scale-[96%] active:ring-black/20",
               {
